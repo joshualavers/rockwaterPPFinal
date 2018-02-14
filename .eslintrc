@@ -6,6 +6,10 @@
     "guard-for-in": 0,
     "no-restricted-syntax": 0,
     "vars-on-top": 0,
-    "no-var": 0
-  }
+    "no-var": 0,
+    "import/no-unresolved": 0
+  },
+  "globals": {
+    alert: true
+    }
 }

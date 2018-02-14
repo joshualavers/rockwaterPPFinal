@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button, FlatList, View, Text } from 'react-native';
+import { Button, FlatList, View, Text, Image, TouchableWithoutFeedback } from 'react-native';
 import Spinner from 'react-native-number-spinner';
 import { ListItem } from 'react-native-elements';
-import { valueChanged } from '../actions';
-// import { CardSection } from './common';
+import { valueChanged, selectProduct } from '../actions';
+import { CardSection } from './common';
 
 class ProductPage extends Component {
 	constructor(props) {
@@ -36,7 +36,21 @@ class ProductPage extends Component {
     console.log('ONVALUECHANGE: ', this.state.productsArray);
 }
 
+  renderDescription() {
+    const { expanded } = this.props;
+    if (expanded) {
+      return (
+        <CardSection>
+          <Image
+          source={require('../images/springtimeappimagetest(100x175).jpg')}
+          />
+        </CardSection>
+      );
+    }
+  }
+
   render() {
+    const { id } = this.props.products;
     console.log('THIS.PROPS(ProductPage): ', this.props);
     console.log('PRODUCT NAME: ', this.props.ProductName);
     console.log('NAME: ', this.props.Name);
@@ -49,32 +63,38 @@ class ProductPage extends Component {
 					extraData={this.props.products} // when this value changes FlatList re-renders
 					data={this.props.products}
 					keyExtractor={(item, index) => index}
-					renderItem={({ item }) => {
+					renderItem={({ item, pictures }) => {
             return (
               <ListItem
               hideChevron
               titleNumberOfLines={2}
+              pictures={pictures}
               title={
-                <View style={{ flexDirection: 'row', flex: 1 }}>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      flex: 0.8,
-                      paddingTop: 10,
-                      justifyContent: 'center' }}
-                  >{item.name}</Text>
-                  <View style={{ flex: 0.2, paddingRight: 10 }}>
-                    <Spinner
-                      min={0}
-                      max={99}
-                      width={80}
-                      height={30}
-                      default={0}
-                      onNumChange={(value) => this.onValueChange(value, item.key)}
-                      value={item.value}
-                    />
+                  <View style={{ flexDirection: 'row', flex: 1 }}>
+                  <TouchableWithoutFeedback
+                    onPress={() => this.props.selectProduct(id)}
+                  >
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        flex: 0.8,
+                        paddingTop: 10,
+                        justifyContent: 'center' }}
+                    >{item.name}</Text>
+                  </TouchableWithoutFeedback>
+                    <View style={{ flex: 0.2, paddingRight: 10 }}>
+                      <Spinner
+                        min={0}
+                        max={99}
+                        width={80}
+                        height={30}
+                        default={0}
+                        onNumChange={(value) => this.onValueChange(value, item.key)}
+                        value={item.value}
+                      />
+                    </View>
+                    {this.renderDescription()}
                   </View>
-                </View>
               }
 
               /*{
@@ -113,7 +133,8 @@ class ProductPage extends Component {
 				/>
         <Button
 				title="ordaaa"
-				onPress={() => alert(`You ordered ${this.props.products[0].value} Glass Cleaner`)} />
+				onPress={() => alert(`You ordered ${this.props.products[0].value} Glass Cleaner`)}
+        />
       </View>
     );
   }
@@ -133,4 +154,4 @@ const mapStateToProps = (state) => {
     streetaddress: users.StreetAddress
   };
 };
-export default connect(mapStateToProps, { valueChanged })(ProductPage);
+export default connect(mapStateToProps, { valueChanged, selectProduct })(ProductPage);
