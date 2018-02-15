@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button, FlatList, View, Text, Image, TouchableWithoutFeedback } from 'react-native';
+import { Button, FlatList, View, Text, Image } from 'react-native';
 import Spinner from 'react-native-number-spinner';
 import { ListItem } from 'react-native-elements';
+// import ImagePreview from 'react-native-image-preview';
+import Modal from 'react-native-modal';
 import { valueChanged, selectProduct } from '../actions';
-import { CardSection } from './common';
+// import { CardSection } from './common';
 
 class ProductPage extends Component {
 	constructor(props) {
@@ -12,6 +14,7 @@ class ProductPage extends Component {
 
 		this.state = {
 			productsArray: [],
+			isVisible: true
 		};
 	}
 
@@ -36,21 +39,43 @@ class ProductPage extends Component {
     console.log('ONVALUECHANGE: ', this.state.productsArray);
 }
 
-  renderDescription() {
-    const { expanded } = this.props;
-    if (expanded) {
-      return (
-        <CardSection>
-          <Image
-          source={require('../images/springtimeappimagetest(100x175).jpg')}
-          />
-        </CardSection>
-      );
+	toggleModal = () => {
+		this.setState({ isVisible: !this.state.isVisible });
+	}
+
+	renderDescription() {
+    const { selected, products } = this.props;
+    console.log('SELECTED: ', selected);
+    for (var i in products) {
+      console.log('IMAGEURL: ', products[i].imageURL);
+      if (selected === products[i].id) {
+        return (
+						<View>
+							<Modal
+							isVisible={this.state.isVisible}
+							onBackdropPress={this.toggleModal}
+							>
+								<View style={{ justifyContent: 'center', alignItems: 'center' }}>
+									<Image
+									source={{ uri: products[i].imageURL, width: 100, height: 235 }}
+									/>
+								</View>
+							</Modal>
+						</View>
+					/* <View style={{ justifyContent: 'center', alignItems: 'center' }}>
+		        <ImagePreview
+		        visible
+		        transparent
+		    		animationType="slide"
+						source={{ uri: `${products[i].imageURL}`, width: 300, height: 300 }}
+		        />
+					</View> */
+        );
+      }
     }
   }
 
   render() {
-    const { id } = this.props.products;
     console.log('THIS.PROPS(ProductPage): ', this.props);
     console.log('PRODUCT NAME: ', this.props.ProductName);
     console.log('NAME: ', this.props.Name);
@@ -62,36 +87,34 @@ class ProductPage extends Component {
 					style={{ flex: 1 }}
 					extraData={this.props.products} // when this value changes FlatList re-renders
 					data={this.props.products}
-					keyExtractor={(item, index) => index}
-					renderItem={({ item, pictures }) => {
+					keyExtractor={(item) => item.name}
+					renderItem={({ item }) => {
             return (
               <ListItem
               hideChevron
               titleNumberOfLines={2}
-              pictures={pictures}
+              onPress={() => this.props.selectProduct(item.id)}
               title={
-                  <View style={{ flexDirection: 'row', flex: 1 }}>
-                  <TouchableWithoutFeedback
-                    onPress={() => this.props.selectProduct(id)}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 12,
-                        flex: 0.8,
-                        paddingTop: 10,
-                        justifyContent: 'center' }}
-                    >{item.name}</Text>
-                  </TouchableWithoutFeedback>
-                    <View style={{ flex: 0.2, paddingRight: 10 }}>
-                      <Spinner
-                        min={0}
-                        max={99}
-                        width={80}
-                        height={30}
-                        default={0}
-                        onNumChange={(value) => this.onValueChange(value, item.key)}
-                        value={item.value}
-                      />
+                  <View>
+                    <View style={{ flexDirection: 'row', flex: 1 }}>
+                      <Text
+                        style={{
+                          fontSize: 12,
+                          flex: 0.8,
+                          paddingTop: 10,
+                          justifyContent: 'center' }}
+                      >{item.name}</Text>
+                      <View style={{ flex: 0.2, paddingRight: 10 }}>
+                        <Spinner
+                          min={0}
+                          max={99}
+                          width={80}
+                          height={30}
+                          default={0}
+                          onNumChange={(value) => this.onValueChange(value, item.key)}
+                          value={item.value}
+                        />
+                      </View>
                     </View>
                     {this.renderDescription()}
                   </View>
@@ -143,10 +166,15 @@ class ProductPage extends Component {
 const mapStateToProps = (state) => {
   const { products } = state.products;
   const { users } = state;
-  const expanded = state.selectedProductId === products.id;
+  const selected = state.selectedProductId;
+  /* for (var i in products) {
+    const expanded = state.selectedProductId === products[i].id;
+      console.log('EXPANDED: ', expanded);
+  } */
   return {
     products,
-    expanded,
+    selected,
+  //  expanded,
     email: users.Email,
     city: users.City,
     postalcode: users.PostalCode,

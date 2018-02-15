@@ -1,10 +1,10 @@
 import React from 'react';
-import { Text, View, Modal } from 'react-native';
+import { Modal, Image } from 'react-native';
 import { CardSection } from './CardSection';
-import { Button } from './Button';
+// import { Button } from './Button';
 
-const Confirm = ({ children, onAccept, onDecline, visible }) => {
-  const { containerStyle, textStyle, cardSectionStyle } = styles;
+const Confirm = ({ children, onAccept, onDecline, visible }, props) => {
+  //const { containerStyle, textStyle, cardSectionStyle } = styles;
 
   return (
     <Modal
@@ -13,21 +13,16 @@ const Confirm = ({ children, onAccept, onDecline, visible }) => {
       animationType="slide"
       onRequestClose={() => {}}
     >
-      <View style={containerStyle}>
-        <CardSection style={cardSectionStyle}>
-          <Text style={textStyle}>{children}</Text>
-        </CardSection>
-
-        <CardSection>
-          <Button onPress={onAccept}>Yes</Button>
-          <Button onPress={onDecline}>No</Button>
-        </CardSection>
-      </View>
+    <CardSection>
+      <Image
+      source={{ uri: props.uri, width: 300, height: 300 }}
+      />
+    </CardSection>
     </Modal>
   );
 };
 
-const styles = {
+/* const styles = {
   cardSectionStyle: {
     justifyContent: 'center'
   },
@@ -43,6 +38,6 @@ const styles = {
     flex: 1,
     justifyContent: 'center'
   }
-};
+}; */
 
 export { Confirm };
