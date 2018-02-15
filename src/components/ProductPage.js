@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { Button, FlatList, View, Text, Image } from 'react-native';
 import Spinner from 'react-native-number-spinner';
 import { ListItem } from 'react-native-elements';
+import { email } from 'react-native-communications';
 // import ImagePreview from 'react-native-image-preview';
 import Modal from 'react-native-modal';
 import { valueChanged, selectProduct } from '../actions';
@@ -16,6 +17,7 @@ class ProductPage extends Component {
 			productsArray: [],
 			isModalVisible: false,
 			selectedItem: {},
+			orderedItemNameAndQuantity: []
 		};
 	}
 
@@ -32,24 +34,48 @@ class ProductPage extends Component {
 		console.log('Products array: ', productsArray);
 	}
 
-  onValueChange(value, key) {
-    // console.log('thirdArg: ', thirdArg);
-    console.log('KEY IN onValueChange: ', key);
-    this.props.valueChanged(value, key);
-    console.log('VALUE: ', value);
-    console.log('ONVALUECHANGE: ', this.state.productsArray);
+onValueChange(value, key) {
+  // console.log('thirdArg: ', thirdArg);
+  console.log('KEY IN onValueChange: ', key);
+  this.props.valueChanged(value, key);
+  console.log('VALUE: ', value);
+  console.log('ONVALUECHANGE: ', this.state.productsArray);
 }
 
+onEmailSend = () => {
+	const orderedItemNameAndQuantity = [];
+	for (var i in this.props.products) {
+		if (this.props.products[i].value !== 0) {
+			orderedItemNameAndQuantity.push({
+				name: this.props.products[i].name,
+				quantity: this.props.products[i].value });
+		}
+		// array of products ordered
+		console.log('orderedItemNameAndQuantity: ', orderedItemNameAndQuantity);
+		this.setState({ orderedItemNameAndQuantity });
+	}
+	email([`${this.props.email}`],
+		['ekavanagh@rockwater.net'],
+		null,
+		'Order Confirmation',
+		`Delivery Address:
+		${this.props.streetaddress}
+		 ${this.props.city}, ${this.props.province} ${this.props.postalcode}
+
+		`);
+}
 
 selectItem(item) {
 	this.setState({ selectedItem: item });
 	this.setState({ isModalVisible: true });
-	console.log('ITEM: ', item);
+	console.log('ITEM: ', item.value);
 }
 
 toggleModal = () => {
 	console.log('toggleModalCalled');
-	this.setState({ isModalVisible: !this.state.isModalVisible }, () => console.log('isModalVisible: ', this.state.isModalVisible));
+	this.setState({
+		isModalVisible: !this.state.isModalVisible },
+		() => console.log('isModalVisible: ', this.state.isModalVisible));
 }
 
 
@@ -100,7 +126,10 @@ toggleModal = () => {
 										>
 											<View style={{ justifyContent: 'center', alignItems: 'center' }}>
 												<Image
-												source={{ uri: `${this.state.selectedItem.imageURL}`, width: 100, height: 235 }}
+												source={{
+													uri: `${this.state.selectedItem.imageURL}`,
+													width: 100,
+													height: 235 }}
 												/>
 											</View>
 										</Modal>
@@ -111,8 +140,8 @@ toggleModal = () => {
 					}}
 				/>
         <Button
-				title="ordaaa"
-				onPress={() => alert(`You ordered ${this.props.products[0].value} Glass Cleaner`)}
+				title="Place Order"
+				onPress={this.onEmailSend}
         />
       </View>
     );
@@ -131,6 +160,8 @@ const mapStateToProps = (state) => {
     products,
     selected,
   //  expanded,
+		productName: products.name,
+		productQuantity: products.value,
     email: users.Email,
     city: users.City,
     postalcode: users.PostalCode,
