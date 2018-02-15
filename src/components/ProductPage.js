@@ -14,7 +14,8 @@ class ProductPage extends Component {
 
 		this.state = {
 			productsArray: [],
-			isModalVisible: false
+			isModalVisible: false,
+			selectedItem: {},
 		};
 	}
 
@@ -39,41 +40,18 @@ class ProductPage extends Component {
     console.log('ONVALUECHANGE: ', this.state.productsArray);
 }
 
-toggleModal = () =>
-	this.setState({ isModalVisible: !this.state.isModalVisible });
 
-	renderDescription = () => {
-    const { selected, products } = this.props;
-    console.log('SELECTED: ', selected);
-    for (var i in products) {
-      console.log('IMAGEURL: ', products[i].imageURL);
-			console.log('IF STATEMENT: ', selected === products[i].id);
-      if (selected === products[i].id) {
-        return (
-						<View>
-							<Modal
-							isVisible={!this.state.isModalVisible}
-							onBackdropPress={this.toggleModal.bind(this)}
-							>
-								<View style={{ justifyContent: 'center', alignItems: 'center' }}>
-									<Image
-									source={{ uri: `${products[i].imageURL}`, width: 100, height: 235 }}
-									/>
-								</View>
-							</Modal>
-						</View>
-					/* <View style={{ justifyContent: 'center', alignItems: 'center' }}>
-		        <ImagePreview
-		        visible
-		        transparent
-		    		animationType="slide"
-						source={{ uri: `${products[i].imageURL}`, width: 300, height: 300 }}
-		        />
-					</View> */
-        );
-      }
-    }
-  }
+selectItem(item) {
+	this.setState({ selectedItem: item });
+	this.setState({ isModalVisible: true });
+	console.log('ITEM: ', item);
+}
+
+toggleModal = () => {
+	console.log('toggleModalCalled');
+	this.setState({ isModalVisible: !this.state.isModalVisible }, () => console.log('isModalVisible: ', this.state.isModalVisible));
+}
+
 
   render() {
     console.log('THIS.PROPS(ProductPage): ', this.props);
@@ -93,7 +71,7 @@ toggleModal = () =>
               <ListItem
               hideChevron
               titleNumberOfLines={2}
-              onPress={() => this.props.selectProduct(item.id)}
+              onPress={() => this.selectItem(item)}
               title={
                   <View>
                     <View style={{ flexDirection: 'row', flex: 1 }}>
@@ -116,7 +94,16 @@ toggleModal = () =>
                         />
                       </View>
                     </View>
-                    {this.renderDescription()}
+										<Modal
+										isVisible={this.state.isModalVisible}
+										onBackdropPress={() => this.setState({ isModalVisible: false })}
+										>
+											<View style={{ justifyContent: 'center', alignItems: 'center' }}>
+												<Image
+												source={{ uri: `${this.state.selectedItem.imageURL}`, width: 100, height: 235 }}
+												/>
+											</View>
+										</Modal>
                   </View>
               }
               />
