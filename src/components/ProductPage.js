@@ -14,7 +14,7 @@ class ProductPage extends Component {
 
 		this.state = {
 			productsArray: [],
-			isVisible: true
+			isModalVisible: false
 		};
 	}
 
@@ -39,25 +39,25 @@ class ProductPage extends Component {
     console.log('ONVALUECHANGE: ', this.state.productsArray);
 }
 
-	toggleModal = () => {
-		this.setState({ isVisible: !this.state.isVisible });
-	}
+toggleModal = () =>
+	this.setState({ isModalVisible: !this.state.isModalVisible });
 
-	renderDescription() {
+	renderDescription = () => {
     const { selected, products } = this.props;
     console.log('SELECTED: ', selected);
     for (var i in products) {
       console.log('IMAGEURL: ', products[i].imageURL);
+			console.log('IF STATEMENT: ', selected === products[i].id);
       if (selected === products[i].id) {
         return (
 						<View>
 							<Modal
-							isVisible={this.state.isVisible}
-							onBackdropPress={this.toggleModal}
+							isVisible={!this.state.isModalVisible}
+							onBackdropPress={this.toggleModal.bind(this)}
 							>
 								<View style={{ justifyContent: 'center', alignItems: 'center' }}>
 									<Image
-									source={{ uri: products[i].imageURL, width: 100, height: 235 }}
+									source={{ uri: `${products[i].imageURL}`, width: 100, height: 235 }}
 									/>
 								</View>
 							</Modal>
@@ -119,37 +119,6 @@ class ProductPage extends Component {
                     {this.renderDescription()}
                   </View>
               }
-
-              /*{
-                <View>
-                  <Picker>
-                    <Picker.Item
-                    label="1"
-                    value="1"
-                    />
-                    <Picker.Item
-                    label="2"
-                    value="2"
-                    />
-                    <Picker.Item
-                    label="3"
-                    value="3"
-                    />
-                    <Picker.Item
-                    label="4"
-                    value="4"
-                    />
-                    <Picker.Item
-                    label="5"
-                    value="5"
-                    />
-                    <Picker.Item
-                    label="6"
-                    value="6"
-                    />
-                  </Picker>
-                </View>
-              } */
               />
 						);
 					}}
