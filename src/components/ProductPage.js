@@ -18,7 +18,7 @@ class ProductPage extends Component {
 			isModalVisible: false,
 			selectedItem: {},
 			orderedItemNameAndQuantity: [],
-			orderedItemNameAndQuantityStr: ''
+			orderedItemNameStr: {}
 		};
 	}
 
@@ -51,28 +51,31 @@ onEmailSend = () => {
 				name: this.props.products[i].name,
 				quantity: this.props.products[i].value });
 		}
-		// array of products ordered
-	  var orderedItemNameStr = orderedItemNameAndQuantity.map(function(order) {
-			return order.name;
-		}).join(', ');
-		var orderedItemQuantityStr = orderedItemNameAndQuantity.map(function(order) {
-			return order.quantity;
-		}).join(', ');
-		console.log('orderedItemNameAndQuantity: ', orderedItemNameAndQuantity);
-		console.log('orderedItemNameAndQuantityStr: ', orderedItemNameStr);
-		console.log('orderedItemQuantityStr: ', orderedItemQuantityStr);
-		this.setState({ orderedItemNameAndQuantity });
-		this.setState({ orderedItemNameStr });
 	}
+	const orderedItemNameStr = orderedItemNameAndQuantity.map(function(order) {
+		return `${order.name} - ${order.quantity}
+		`;
+	}).join(', ');
+	//const orderedItemQuantityStr = orderedItemNameAndQuantity.map(function(order) {
+	//	return order.quantity;
+	// }).join(', ');
+	console.log('orderedItemNameAndQuantity: ', orderedItemNameAndQuantity);
+	console.log('orderedItemNameAndQuantityStr: ', orderedItemNameStr);
+	// console.log('orderedItemQuantityStr: ', orderedItemQuantityStr);
+
+	var emailBody =
+	`Delivery Address:
+	${this.props.streetaddress}
+	${this.props.city}, ${this.props.province} ${this.props.postalcode}
+
+	${orderedItemNameStr}`;
+
+
 	email([`${this.props.email}`],
 		['ekavanagh@rockwater.net'],
 		null,
 		'Order Confirmation',
-		`Delivery Address:
-		${this.props.streetaddress}
-		 ${this.props.city}, ${this.props.province} ${this.props.postalcode}
-
-		${this.state.orderedItemNameStr}`);
+		emailBody);
 }
 
 selectItem(item) {
