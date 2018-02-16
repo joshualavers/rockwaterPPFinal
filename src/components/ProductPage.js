@@ -55,7 +55,7 @@ onEmailSend = () => {
 	const orderedItemNameStr = orderedItemNameAndQuantity.map(function(order) {
 		return `${order.name} - ${order.quantity}
 		`;
-	}).join(', ');
+	}).join('');
 	//const orderedItemQuantityStr = orderedItemNameAndQuantity.map(function(order) {
 	//	return order.quantity;
 	// }).join(', ');
@@ -119,13 +119,14 @@ toggleModal = () => {
                           fontSize: 12,
                           flex: 0.8,
                           paddingTop: 10,
-                          justifyContent: 'center' }}
+                          justifyContent: 'center',
+												 	alignItems: 'center' }}
                       >{item.name}</Text>
-                      <View style={{ flex: 0.2, paddingRight: 10 }}>
+                      <View style={{ flex: 0.2, justifyContent: 'center', alignItems: 'center', marginRight: 10 }}>
                         <Spinner
                           min={0}
                           max={99}
-                          width={80}
+                          width={85}
                           height={30}
                           default={0}
                           onNumChange={(value) => this.onValueChange(value, item.key)}

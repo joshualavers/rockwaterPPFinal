@@ -27,7 +27,7 @@ class WelcomePage extends Component {
           <RaisedTextButton
           title='Place Order'
           color='#66ff99'
-          style={{ marginTop: 100 }}
+          style={{ marginTop: 50 }}
           onPress={() => { Actions.core({ type: 'reset' }); Actions.productPage(); }}
           />
       </Card>
@@ -41,7 +41,7 @@ const styles = {
     color: '#000'
   },
   cardStyle: {
-    paddingTop: 250,
+    paddingTop: 175,
     alignItems: 'center',
     justifyContent: 'center'
   }

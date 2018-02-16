@@ -57,7 +57,7 @@ class LoginForm extends Component {
             style={styles.rockwaterLogoStyle}
           />
         </View>
-          <Card style={{ flex: 0.4, marginBottom: 525 }}>
+          <Card style={{ flex: 0.4, marginBottom: 475 }}>
             <CardSection style={styles.inputStyle}>
               <Input
                 label="Email"
@@ -109,7 +109,8 @@ const styles = {
     height: '100%'
   },
   inputStyle: {
-    backgroundColor: 'rgba(0,0,0,0)'
+    backgroundColor: 'rgba(0,0,0,0)',
+    marginTop: 5
   },
   rockwaterLogoStyle: {
     alignSelf: 'center'
